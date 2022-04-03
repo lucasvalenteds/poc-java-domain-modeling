@@ -8,13 +8,14 @@ import com.example.features.RatingManagement;
 import com.example.features.RatingManagementDefault;
 import com.example.features.StudentManagement;
 import com.example.features.StudentManagementDefault;
-import jakarta.inject.Singleton;
+import com.example.infrastructure.validation.ValidatableFeature;
 import jakarta.ws.rs.core.Feature;
 import jakarta.ws.rs.core.FeatureContext;
 import jakarta.ws.rs.ext.Provider;
-import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 @Provider
 public final class DomainFeature implements Feature {
@@ -23,30 +24,13 @@ public final class DomainFeature implements Feature {
 
     @Override
     public boolean configure(FeatureContext context) {
-        context.register(new DomainFeature.Binder());
+        context.register(new ValidatableFeature(Map.ofEntries(
+            Map.entry(CourseManagementDefault.class, CourseManagement.class),
+            Map.entry(EnrollmentManagementDefault.class, EnrollmentManagement.class),
+            Map.entry(RatingManagementDefault.class, RatingManagement.class),
+            Map.entry(StudentManagementDefault.class, StudentManagement.class)
+        )));
         LOGGER.info("Domain feature initialized");
         return true;
-    }
-
-    private static final class Binder extends AbstractBinder {
-
-        @Override
-        protected void configure() {
-            bind(CourseManagementDefault.class)
-                .to(CourseManagement.class)
-                .in(Singleton.class);
-
-            bind(EnrollmentManagementDefault.class)
-                .to(EnrollmentManagement.class)
-                .in(Singleton.class);
-
-            bind(StudentManagementDefault.class)
-                .to(StudentManagement.class)
-                .in(Singleton.class);
-
-            bind(RatingManagementDefault.class)
-                .to(RatingManagement.class)
-                .in(Singleton.class);
-        }
     }
 }
