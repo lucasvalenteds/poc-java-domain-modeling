@@ -3,21 +3,20 @@ package com.example;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
-
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MyResourceTest {
 
-    private HttpServer server;
-    private WebTarget target;
+    private static HttpServer server;
+    private static WebTarget target;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeAll
+    public static void setUp() throws Exception {
         // start the server
         server = Main.startServer();
         // create the client
@@ -32,8 +31,8 @@ public class MyResourceTest {
         target = c.target(Main.BASE_URI);
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterAll
+    public static void tearDown() throws Exception {
         server.stop();
     }
 
