@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.RowMapper;
 import javax.sql.DataSource;
 import java.sql.Types;
 
-public final class CourseRepositoryDefault implements CourseRepository, Validatable {
+public class CourseRepositoryDefault implements CourseRepository, Validatable {
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Course> courseRowMapper;

@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 import java.sql.Types;
 import java.util.List;
 
-public final class EnrollmentRepositoryDefault implements EnrollmentRepository, Validatable {
+public class EnrollmentRepositoryDefault implements EnrollmentRepository, Validatable {
 
     private final JdbcTemplate jdbcTemplate;
 

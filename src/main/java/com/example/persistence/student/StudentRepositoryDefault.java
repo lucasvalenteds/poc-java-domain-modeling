@@ -14,7 +14,7 @@ import org.springframework.jdbc.core.RowMapper;
 import javax.sql.DataSource;
 import java.sql.Types;
 
-public final class StudentRepositoryDefault implements StudentRepository, Validatable {
+public class StudentRepositoryDefault implements StudentRepository, Validatable {
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Student> studentRowMapper;

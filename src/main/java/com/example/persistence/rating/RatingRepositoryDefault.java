@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.RowMapper;
 import javax.sql.DataSource;
 import java.sql.Types;
 
-public final class RatingRepositoryDefault implements RatingRepository, Validatable {
+public class RatingRepositoryDefault implements RatingRepository, Validatable {
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Rating> ratingRowMapper;

@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 import java.util.UUID;
 
-public final class StudentManagementDefault implements StudentManagement, Validatable {
+public class StudentManagementDefault implements StudentManagement, Validatable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StudentManagementDefault.class);
 
