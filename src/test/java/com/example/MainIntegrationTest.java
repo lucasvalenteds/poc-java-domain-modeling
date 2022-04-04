@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.infrastructure.errors.ErrorResponse;
 import com.example.infrastructure.errors.UnprocessableEntityStatusCode;
 import com.example.web.enrollment.EnrollResponse;
 import com.example.web.enrollment.RateRequest;
@@ -27,7 +28,6 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MainIntegrationTest {
@@ -168,8 +168,8 @@ class MainIntegrationTest {
         response.bufferEntity();
 
         assertEquals(UnprocessableEntityStatusCode.INSTANCE.getStatusCode(), response.getStatus());
-        assertThat(response.readEntity(String.class))
-            .contains(List.of("{\"message\":\"Student cannot rating a course they are not enrolled in\"}"));
+        assertThat(response.readEntity(ErrorResponse.class))
+            .matches(error -> error.message().equals("Student cannot rating a course they are not enrolled in"));
     }
 
     private String getLastResourceURI(final URI uri) {

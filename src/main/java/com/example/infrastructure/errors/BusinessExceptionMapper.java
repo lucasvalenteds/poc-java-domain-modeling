@@ -6,19 +6,17 @@ import jakarta.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-
 @Provider
-public final class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException> {
+public final class BusinessExceptionMapper implements ExceptionMapper<BusinessException> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeExceptionMapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BusinessExceptionMapper.class);
 
     @Override
-    public Response toResponse(RuntimeException exception) {
+    public Response toResponse(BusinessException exception) {
         LOGGER.info(exception.getMessage(), exception);
 
         return Response.status(UnprocessableEntityStatusCode.INSTANCE)
-            .entity(Map.of("message", exception.getMessage()))
+            .entity(new ErrorResponse(exception.getMessage()))
             .build();
     }
 }

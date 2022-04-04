@@ -2,6 +2,7 @@ package com.example;
 
 import com.example.infrastructure.configuration.ApplicationFeature;
 import com.example.infrastructure.configuration.DatabaseFeature;
+import com.example.infrastructure.errors.ErrorResponse;
 import com.example.infrastructure.errors.UnprocessableEntityStatusCode;
 import com.example.web.enrollment.EnrollResponse;
 import com.example.web.enrollment.RateRequest;
@@ -155,8 +156,8 @@ class MainInMemoryTest extends JerseyTest {
         response.bufferEntity();
 
         assertEquals(UnprocessableEntityStatusCode.INSTANCE.getStatusCode(), response.getStatus());
-        assertThat(response.readEntity(String.class))
-            .contains(List.of("{\"message\":\"Student cannot rating a course they are not enrolled in\"}"));
+        assertThat(response.readEntity(ErrorResponse.class))
+            .matches(error -> error.message().equals("Student cannot rating a course they are not enrolled in"));
     }
 
     private String getLastResourceURI(final URI uri) {

@@ -1,10 +1,12 @@
 package com.example.persistence.course;
 
 import com.example.domain.course.CourseId;
+import com.example.infrastructure.errors.PersistenceException;
 
 import java.io.Serial;
 
-public final class CoursePersistenceException extends RuntimeException {
+public final class CoursePersistenceException extends PersistenceException {
+
     @Serial
     private static final long serialVersionUID = -7247636351755226906L;
 

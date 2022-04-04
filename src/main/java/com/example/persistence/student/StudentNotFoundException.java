@@ -1,10 +1,11 @@
 package com.example.persistence.student;
 
 import com.example.domain.student.StudentId;
+import com.example.infrastructure.errors.ResourceNotFoundException;
 
 import java.io.Serial;
 
-public final class StudentNotFoundException extends RuntimeException {
+public final class StudentNotFoundException extends ResourceNotFoundException {
 
     @Serial
     private static final long serialVersionUID = -4880228168062763993L;

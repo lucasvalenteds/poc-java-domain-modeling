@@ -3,6 +3,7 @@ package com.example.features;
 import com.example.domain.course.CourseId;
 import com.example.domain.course.Rating;
 import com.example.domain.student.StudentId;
+import com.example.infrastructure.errors.BusinessException;
 import com.example.infrastructure.validation.Validatable;
 import com.example.persistence.enrollment.EnrollmentRepository;
 import com.example.persistence.rating.RatingRepository;
@@ -31,7 +32,7 @@ public class RatingManagementDefault implements RatingManagement, Validatable {
 
         final var studentIsEnrolled = enrollmentRepository.exists(studentId, courseId);
         if (!studentIsEnrolled) {
-            throw new IllegalArgumentException("Student cannot rating a course they are not enrolled in");
+            throw new BusinessException("Student cannot rating a course they are not enrolled in");
         }
 
         ratingRepository.upsert(studentId, courseId, rating);
