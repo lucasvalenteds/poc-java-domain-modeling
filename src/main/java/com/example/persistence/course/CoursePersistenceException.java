@@ -10,7 +10,7 @@ public final class CoursePersistenceException extends PersistenceException {
     @Serial
     private static final long serialVersionUID = -7247636351755226906L;
 
-    private final CourseId courseId;
+    private final transient CourseId courseId;
 
     public CoursePersistenceException(CourseId courseId, String message, Throwable throwable) {
         super(message, throwable);
