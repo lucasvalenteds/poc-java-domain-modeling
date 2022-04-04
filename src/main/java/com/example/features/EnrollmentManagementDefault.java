@@ -5,11 +5,13 @@ import com.example.domain.enrollment.Enrollment;
 import com.example.domain.enrollment.EnrollmentId;
 import com.example.domain.student.StudentId;
 import com.example.infrastructure.validation.Validatable;
+import com.example.infrastructure.validation.ValidatorWrapper;
 import com.example.persistence.course.CourseRepository;
 import com.example.persistence.enrollment.EnrollmentRepository;
 import com.example.persistence.student.StudentRepository;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,14 +24,17 @@ public class EnrollmentManagementDefault implements EnrollmentManagement, Valida
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final Validator validator;
 
     @Inject
     public EnrollmentManagementDefault(StudentRepository studentRepository,
                                        CourseRepository courseRepository,
-                                       EnrollmentRepository enrollmentRepository) {
+                                       EnrollmentRepository enrollmentRepository,
+                                       Validator validator) {
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
         this.enrollmentRepository = enrollmentRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -42,11 +47,8 @@ public class EnrollmentManagementDefault implements EnrollmentManagement, Valida
         final var student = studentRepository.findById(studentId);
         LOGGER.info("Found student {}", student);
 
-        final var enrollment = new Enrollment(
-            new EnrollmentId(UUID.randomUUID()),
-            student.id(),
-            course.id()
-        );
+        final var enrollmentId = ValidatorWrapper.validate(validator, new EnrollmentId(UUID.randomUUID()));
+        final var enrollment = new Enrollment(enrollmentId, student, course);
 
         LOGGER.info("Enrolling student {} to course {}", student.id().value(), course.id().value());
 

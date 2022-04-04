@@ -37,8 +37,8 @@ public final class EnrollmentResource {
         return Response.status(Response.Status.OK)
             .entity(new EnrollResponse(
                 enrollment.id().value(),
-                enrollment.studentId().value(),
-                enrollment.courseId().value()
+                enrollment.student().id().value(),
+                enrollment.course().id().value()
             ))
             .build();
     }

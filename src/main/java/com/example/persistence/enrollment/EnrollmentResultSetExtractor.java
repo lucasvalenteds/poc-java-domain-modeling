@@ -4,6 +4,8 @@ import com.example.domain.course.CourseId;
 import com.example.domain.enrollment.Enrollment;
 import com.example.domain.enrollment.EnrollmentId;
 import com.example.domain.student.StudentId;
+import com.example.persistence.course.CourseRepository;
+import com.example.persistence.student.StudentRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -15,6 +17,14 @@ import java.util.UUID;
 
 public final class EnrollmentResultSetExtractor implements ResultSetExtractor<List<Enrollment>> {
 
+    private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
+
+    public EnrollmentResultSetExtractor(StudentRepository studentRepository, CourseRepository courseRepository) {
+        this.studentRepository = studentRepository;
+        this.courseRepository = courseRepository;
+    }
+
     @Override
     public List<Enrollment> extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         final var enrollments = new LinkedList<Enrollment>();
@@ -24,7 +34,10 @@ public final class EnrollmentResultSetExtractor implements ResultSetExtractor<Li
             final var studentId = new StudentId(UUID.fromString(resultSet.getObject(2, String.class)));
             final var courseId = new CourseId(UUID.fromString(resultSet.getObject(3, String.class)));
 
-            enrollments.add(new Enrollment(enrollmentId, studentId, courseId));
+            final var student = studentRepository.findById(studentId);
+            final var course = courseRepository.findById(courseId);
+
+            enrollments.add(new Enrollment(enrollmentId, student, course));
         }
 
         return enrollments;

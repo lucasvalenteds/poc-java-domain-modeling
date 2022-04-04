@@ -5,9 +5,12 @@ import com.example.domain.enrollment.Enrollment;
 import com.example.domain.enrollment.EnrollmentId;
 import com.example.domain.student.StudentId;
 import com.example.infrastructure.validation.Validatable;
+import com.example.persistence.course.CourseRepository;
+import com.example.persistence.student.StudentRepository;
 import jakarta.inject.Inject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 
 import javax.sql.DataSource;
 import java.sql.Types;
@@ -16,10 +19,14 @@ import java.util.List;
 public class EnrollmentRepositoryDefault implements EnrollmentRepository, Validatable {
 
     private final JdbcTemplate jdbcTemplate;
+    private final ResultSetExtractor<List<Enrollment>> enrollmentResultSetExtractor;
 
     @Inject
-    public EnrollmentRepositoryDefault(DataSource dataSource) {
+    public EnrollmentRepositoryDefault(DataSource dataSource,
+                                       StudentRepository studentRepository,
+                                       CourseRepository courseRepository) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.enrollmentResultSetExtractor = new EnrollmentResultSetExtractor(studentRepository, courseRepository);
     }
 
     @Override
@@ -32,8 +39,8 @@ public class EnrollmentRepositoryDefault implements EnrollmentRepository, Valida
         try {
             jdbcTemplate.update(query, preparedStatement -> {
                 preparedStatement.setObject(1, enrollment.id().value(), Types.CHAR);
-                preparedStatement.setObject(2, enrollment.studentId().value(), Types.CHAR);
-                preparedStatement.setObject(3, enrollment.courseId().value(), Types.CHAR);
+                preparedStatement.setObject(2, enrollment.student().id().value(), Types.CHAR);
+                preparedStatement.setObject(3, enrollment.course().id().value(), Types.CHAR);
             });
         } catch (DataAccessException exception) {
             throw new EnrollmentPersistenceException("Error inserting enrollment", exception);
@@ -88,7 +95,7 @@ public class EnrollmentRepositoryDefault implements EnrollmentRepository, Valida
                 query,
                 new Object[]{studentId.value()},
                 new int[]{Types.CHAR},
-                new EnrollmentResultSetExtractor()
+                this.enrollmentResultSetExtractor
             );
         } catch (DataAccessException exception) {
             throw new EnrollmentPersistenceException("Error finding enrollments by student", exception);
@@ -108,7 +115,7 @@ public class EnrollmentRepositoryDefault implements EnrollmentRepository, Valida
                 query,
                 new Object[]{courseId.value()},
                 new int[]{Types.CHAR},
-                new EnrollmentResultSetExtractor()
+                this.enrollmentResultSetExtractor
             );
         } catch (DataAccessException exception) {
             throw new EnrollmentPersistenceException("Error finding enrollments by course", exception);
