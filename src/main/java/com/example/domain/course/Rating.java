@@ -1,6 +1,6 @@
 package com.example.domain.course;
 
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.PositiveOrZero;
 
-public record Rating(@Min(0) int value) {
+public record Rating(@PositiveOrZero int value) {
 }
