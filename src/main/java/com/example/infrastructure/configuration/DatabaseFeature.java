@@ -6,7 +6,6 @@ import jakarta.ws.rs.core.Feature;
 import jakarta.ws.rs.core.FeatureContext;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
-import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.h2.jdbcx.JdbcDataSource;
 import org.slf4j.Logger;
