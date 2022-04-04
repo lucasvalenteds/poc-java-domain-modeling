@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.infrastructure.configuration.ApplicationFeature;
 import com.example.infrastructure.configuration.DatabaseFeature;
 import com.example.web.enrollment.EnrollResponse;
 import com.example.web.enrollment.RateRequest;
@@ -29,10 +30,12 @@ class MainInMemoryTest extends JerseyTest {
     @Override
     protected Application configure() {
         return new ResourceConfig()
-            .packages(Main.class.getPackageName())
             .property(DatabaseFeature.DATABASE_URL_PROPERTY, "jdbc:h2:mem:testdb1;DB_CLOSE_DELAY=-1")
             .property(DatabaseFeature.DATABASE_USER_PROPERTY, "sa")
-            .property(DatabaseFeature.DATABASE_PASSWORD_PROPERTY, "password");
+            .property(DatabaseFeature.DATABASE_PASSWORD_PROPERTY, "password")
+            .register(DatabaseFeature.class)
+            .register(ApplicationFeature.class)
+            .packages(Main.class.getPackageName());
     }
 
     private static String studentId;

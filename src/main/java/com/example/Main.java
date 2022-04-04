@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.infrastructure.configuration.ApplicationFeature;
 import com.example.infrastructure.configuration.DatabaseFeature;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -18,10 +19,12 @@ public class Main {
 
     public static HttpServer startServer() {
         final ResourceConfig resourceConfig = new ResourceConfig()
-            .packages(Main.class.getPackageName())
             .property(DatabaseFeature.DATABASE_URL_PROPERTY, "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1")
             .property(DatabaseFeature.DATABASE_USER_PROPERTY, "sa")
-            .property(DatabaseFeature.DATABASE_PASSWORD_PROPERTY, "password");
+            .property(DatabaseFeature.DATABASE_PASSWORD_PROPERTY, "password")
+            .register(DatabaseFeature.class)
+            .register(ApplicationFeature.class)
+            .packages(Main.class.getPackageName());
 
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), resourceConfig);
     }

@@ -4,7 +4,6 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.core.Configuration;
 import jakarta.ws.rs.core.Feature;
 import jakarta.ws.rs.core.FeatureContext;
-import jakarta.ws.rs.ext.Provider;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
@@ -15,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.util.Optional;
 
-@Provider
 public final class DatabaseFeature implements Feature {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseFeature.class);
