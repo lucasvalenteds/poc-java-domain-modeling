@@ -2,9 +2,11 @@ package com.example;
 
 import com.example.infrastructure.errors.ErrorResponse;
 import com.example.infrastructure.errors.UnprocessableEntityStatusCode;
+import com.example.web.course.FindCourseResponse;
 import com.example.web.enrollment.EnrollResponse;
 import com.example.web.enrollment.RateRequest;
 import com.example.web.enrollment.RateResponse;
+import com.example.web.student.FindStudentResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -137,6 +139,24 @@ class MainIntegrationTest {
 
     @Test
     @Order(5)
+    void studentCourseRatingUpdate() {
+        final var response = target().path("/enrollments/courses/" + courseId + "/students/" + studentId + "/rate")
+            .request()
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .post(Entity.json(new RateRequest(5)));
+
+        response.bufferEntity();
+
+        assertEquals(Response.Status.ACCEPTED.getStatusCode(), response.getStatus());
+
+        final var rateResponse = response.readEntity(RateResponse.class);
+        assertNotNull(rateResponse);
+        assertEquals(5, rateResponse.rating());
+    }
+
+    @Test
+    @Order(6)
     void studentCannotRateCourseWithNegativeNumber() {
         final var response = target().path("/enrollments/courses/" + courseId + "/students/" + studentId + "/rate")
             .request()
@@ -156,7 +176,7 @@ class MainIntegrationTest {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     void studentCannotRateCourseNotEnrolled() {
         final var otherCourseId = UUID.randomUUID();
         final var response = target().path("/enrollments/courses/" + otherCourseId + "/students/" + studentId + "/rate")
@@ -170,6 +190,101 @@ class MainIntegrationTest {
         assertEquals(UnprocessableEntityStatusCode.INSTANCE.getStatusCode(), response.getStatus());
         assertThat(response.readEntity(ErrorResponse.class))
             .matches(error -> error.message().equals("Student cannot rating a course they are not enrolled in"));
+    }
+
+    @Test
+    @Order(8)
+    void findingStudentId() {
+        final var response = target().path("/students/" + studentId)
+            .request()
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .get();
+
+        response.bufferEntity();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+        final var responseBody = response.readEntity(FindStudentResponse.class);
+        assertEquals(studentId, responseBody.id());
+        assertEquals("John", responseBody.firstName());
+        assertEquals("Smith", responseBody.lastName());
+    }
+
+    @Test
+    @Order(9)
+    void findingCourseById() {
+        final var response = target().path("/courses/" + courseId)
+            .request()
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .get();
+
+        response.bufferEntity();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+        final var responseBody = response.readEntity(FindCourseResponse.class);
+        assertEquals(courseId, responseBody.id());
+        assertEquals("ALG123", responseBody.code());
+        assertEquals("Introduction to Algorithms", responseBody.title());
+        assertEquals(5, responseBody.rating());
+    }
+
+    @Test
+    @Order(10)
+    void removingStudentById() {
+        final var response = target().path("/students/" + studentId)
+            .request()
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .delete();
+
+        response.bufferEntity();
+
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    @Order(11)
+    void removingCourseById() {
+        final var response = target().path("/courses/" + courseId)
+            .request()
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .delete();
+
+        response.bufferEntity();
+
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    @Order(12)
+    void notFindingStudentById() {
+        final var response = target().path("/students/" + studentId)
+            .request()
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .get();
+
+        response.bufferEntity();
+
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    @Order(13)
+    void notFindingCourseById() {
+        final var response = target().path("/courses/" + courseId)
+            .request()
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .get();
+
+        response.bufferEntity();
+
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
     private String getLastResourceURI(final URI uri) {

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URI;
 
-public class Main {
+public final class Main {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
@@ -39,5 +39,8 @@ public class Main {
         System.in.read();
 
         server.shutdownNow();
+    }
+
+    private Main() {
     }
 }
