@@ -93,9 +93,9 @@ public class RatingRepositoryDefault implements RatingRepository, Validatable {
         final var query = "DELETE FROM RATING WHERE COURSE_ID = ?";
 
         try {
-            jdbcTemplate.update(query, preparedStatement -> {
-                preparedStatement.setObject(1, courseId.value(), Types.CHAR);
-            });
+            jdbcTemplate.update(query, preparedStatement ->
+                preparedStatement.setObject(1, courseId.value(), Types.CHAR)
+            );
         } catch (DataAccessException exception) {
             throw new RatingPersistenceException("Error deleting rating", exception);
         }
@@ -106,9 +106,9 @@ public class RatingRepositoryDefault implements RatingRepository, Validatable {
         final var query = "DELETE FROM RATING WHERE STUDENT_ID = ?";
 
         try {
-            jdbcTemplate.update(query, preparedStatement -> {
-                preparedStatement.setObject(1, studentId.value(), Types.CHAR);
-            });
+            jdbcTemplate.update(query, preparedStatement ->
+                preparedStatement.setObject(1, studentId.value(), Types.CHAR)
+            );
         } catch (DataAccessException exception) {
             throw new RatingPersistenceException("Error deleting rating", exception);
         }
