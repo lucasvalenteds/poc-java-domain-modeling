@@ -29,7 +29,7 @@ public final class ValidatableMethodInterceptor implements MethodInterceptor {
         final var arguments = invocation.getArguments();
 
         for (var index = 0; index < arguments.length; index++) {
-            if (parameters[index].getAnnotation(Valid.class) != null) {
+            if (parameters[index].isAnnotationPresent(Valid.class)) {
                 ValidatorWrapper.validate(validator, arguments[index]);
             }
         }
