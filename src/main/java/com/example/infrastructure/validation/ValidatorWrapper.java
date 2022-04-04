@@ -5,6 +5,9 @@ import jakarta.validation.Validator;
 
 public final class ValidatorWrapper {
 
+    private ValidatorWrapper() {
+    }
+
     public static <T> T validate(final Validator validator, final T object) throws ConstraintViolationException {
         final var violations = validator.validate(object);
 
