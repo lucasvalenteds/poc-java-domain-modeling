@@ -11,6 +11,7 @@ import com.example.persistence.enrollment.EnrollmentRepository;
 import com.example.persistence.rating.RatingRepository;
 import com.example.persistence.student.StudentRepository;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,13 +40,10 @@ public class StudentManagementDefault implements StudentManagement, Validatable 
     }
 
     @Override
-    public Student createStudent(String firstName, String lastName) {
-        final var student = ValidatorWrapper.validate(validator, new Student(
-            new StudentId(UUID.randomUUID()),
-            new FirstName(firstName),
-            Optional.ofNullable(lastName)
-                .map(LastName::new)
-        ));
+    public Student createStudent(@Valid FirstName firstName, String lastName) {
+        final var studentId = ValidatorWrapper.validate(validator, new StudentId(UUID.randomUUID()));
+        final var lastName1 = ValidatorWrapper.validate(validator, Optional.ofNullable(lastName).map(LastName::new));
+        final var student = new Student(studentId, firstName, lastName1);
 
         LOGGER.info("Creating student {}", student);
 
@@ -57,7 +55,7 @@ public class StudentManagementDefault implements StudentManagement, Validatable 
     }
 
     @Override
-    public void removeStudent(StudentId studentId) {
+    public void removeStudent(@Valid StudentId studentId) {
         LOGGER.info("Removing student {}", studentId.value());
 
         enrollmentRepository.delete(
@@ -78,7 +76,7 @@ public class StudentManagementDefault implements StudentManagement, Validatable 
     }
 
     @Override
-    public Student findStudentById(StudentId studentId) {
+    public Student findStudentById(@Valid StudentId studentId) {
         LOGGER.info("Finding student with ID {}", studentId.value());
 
         return studentRepository.findById(studentId);

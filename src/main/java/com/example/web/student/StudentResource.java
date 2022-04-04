@@ -1,5 +1,6 @@
 package com.example.web.student;
 
+import com.example.domain.student.FirstName;
 import com.example.domain.student.LastName;
 import com.example.domain.student.StudentId;
 import com.example.features.StudentManagement;
@@ -33,7 +34,7 @@ public final class StudentResource {
     public Response createStudent(@Context UriInfo uriInfo, CreateStudentRequest createStudentRequest) {
         LOGGER.info("Create student: {}", createStudentRequest);
         final var student = studentManagement.createStudent(
-            createStudentRequest.firstName(),
+            new FirstName(createStudentRequest.firstName()),
             createStudentRequest.lastName()
         );
 
