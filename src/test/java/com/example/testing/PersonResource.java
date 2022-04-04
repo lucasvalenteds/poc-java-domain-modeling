@@ -18,7 +18,7 @@ public final class PersonResource {
     @POST
     public Response createPerson(Person person) {
         return Response.status(Response.Status.OK)
-            .entity(personService.create(person))
+            .entity(personService.create(person, System.currentTimeMillis()))
             .build();
     }
 }
