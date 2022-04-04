@@ -3,10 +3,9 @@ package com.example.features;
 import com.example.domain.student.Student;
 import com.example.domain.student.StudentId;
 
-import java.util.UUID;
-
 public interface StudentManagement {
 
+    // TODO: Replace String with FirstName and LastName
     Student createStudent(String firstName, String lastName);
 
     void removeStudent(StudentId id);
