@@ -10,7 +10,7 @@ public final class CourseNotFoundException extends ResourceNotFoundException {
     @Serial
     private static final long serialVersionUID = 3951513473009834887L;
 
-    private final CourseId courseId;
+    private final transient CourseId courseId;
 
     public CourseNotFoundException(CourseId courseId, Throwable throwable) {
         super("Course not found by ID", throwable);
