@@ -74,7 +74,7 @@ public class CourseRepositoryDefault implements CourseRepository, Validatable {
         } catch (EmptyResultDataAccessException exception) {
             throw new CourseNotFoundException(courseId, exception);
         } catch (DataAccessException exception) {
-            throw new CoursePersistenceException(courseId, "Error finding couse", exception);
+            throw new CoursePersistenceException(courseId, "Error finding course", exception);
         }
     }
 }
