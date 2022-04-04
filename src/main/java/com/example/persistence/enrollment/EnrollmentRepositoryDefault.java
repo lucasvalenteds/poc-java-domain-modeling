@@ -26,7 +26,7 @@ public class EnrollmentRepositoryDefault implements EnrollmentRepository, Valida
     public void insert(Enrollment enrollment) throws EnrollmentPersistenceException {
         final var query = """
             INSERT INTO ENROLLMENT (ID, STUDENT_ID, COURSE_ID)
-            VALUES (?,?,?)
+             VALUES (?,?,?)
             """;
 
         try {
@@ -79,8 +79,8 @@ public class EnrollmentRepositoryDefault implements EnrollmentRepository, Valida
     public List<Enrollment> findByStudentId(StudentId studentId) throws EnrollmentPersistenceException {
         final var query = """
             SELECT ID, STUDENT_ID, COURSE_ID
-            FROM ENROLLMENT
-            WHERE STUDENT_ID = ?
+             FROM ENROLLMENT
+             WHERE STUDENT_ID = ?
             """;
 
         try {
@@ -99,8 +99,8 @@ public class EnrollmentRepositoryDefault implements EnrollmentRepository, Valida
     public List<Enrollment> findByCourseId(CourseId courseId) throws EnrollmentPersistenceException {
         final var query = """
             SELECT ID, STUDENT_ID, COURSE_ID
-            FROM ENROLLMENT
-            WHERE COURSE_ID = ?
+             FROM ENROLLMENT
+             WHERE COURSE_ID = ?
             """;
 
         try {
