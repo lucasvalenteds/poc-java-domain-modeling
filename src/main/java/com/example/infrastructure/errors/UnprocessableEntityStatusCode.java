@@ -1,4 +1,4 @@
-package com.example.infrastructure.validation;
+package com.example.infrastructure.errors;
 
 import jakarta.ws.rs.core.Response;
 

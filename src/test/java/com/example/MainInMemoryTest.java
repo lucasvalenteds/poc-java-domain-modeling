@@ -2,7 +2,7 @@ package com.example;
 
 import com.example.infrastructure.configuration.ApplicationFeature;
 import com.example.infrastructure.configuration.DatabaseFeature;
-import com.example.infrastructure.validation.UnprocessableEntityStatusCode;
+import com.example.infrastructure.errors.UnprocessableEntityStatusCode;
 import com.example.web.enrollment.EnrollResponse;
 import com.example.web.enrollment.RateRequest;
 import com.example.web.enrollment.RateResponse;
