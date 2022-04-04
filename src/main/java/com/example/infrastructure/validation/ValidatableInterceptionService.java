@@ -19,8 +19,8 @@ public final class ValidatableInterceptionService implements InterceptionService
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidatableInterceptionService.class);
 
-    private final static MethodInterceptor METHOD_INTERCEPTOR = new ValidatableMethodInterceptor();
-    private final static List<MethodInterceptor> METHOD_INTERCEPTORS = Collections.singletonList(METHOD_INTERCEPTOR);
+    private static final MethodInterceptor METHOD_INTERCEPTOR = new ValidatableMethodInterceptor();
+    private static final List<MethodInterceptor> METHOD_INTERCEPTORS = Collections.singletonList(METHOD_INTERCEPTOR);
 
     @Override
     public Filter getDescriptorFilter() {
@@ -29,17 +29,21 @@ public final class ValidatableInterceptionService implements InterceptionService
 
     @Override
     public List<MethodInterceptor> getMethodInterceptors(Method method) {
+        LOGGER.info("Intercepting method {}", method.getName());
+
         for (Parameter parameter : method.getParameters()) {
             if (parameter.isAnnotationPresent(Valid.class)) {
                 LOGGER.info("Intercepting {} annotated with @Valid", parameter);
                 return METHOD_INTERCEPTORS;
             }
         }
-        return null;
+
+        return List.of();
     }
 
     @Override
     public List<ConstructorInterceptor> getConstructorInterceptors(Constructor<?> constructor) {
-        return null;
+        LOGGER.info("Intercepting constructor from {}", constructor.getDeclaringClass().getSimpleName());
+        return List.of();
     }
 }
