@@ -7,7 +7,7 @@ public abstract class ResourceNotFoundException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 4164228308890459484L;
 
-    public ResourceNotFoundException(String message, Throwable cause) {
+    protected ResourceNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 }
