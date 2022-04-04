@@ -2,6 +2,7 @@ package com.example;
 
 import com.example.infrastructure.errors.ErrorResponse;
 import com.example.infrastructure.errors.UnprocessableEntityStatusCode;
+import com.example.web.course.CreateCourseRequest;
 import com.example.web.course.FindCourseResponse;
 import com.example.web.enrollment.EnrollResponse;
 import com.example.web.enrollment.RateRequest;
@@ -86,10 +87,7 @@ class MainIntegrationTest {
             .request()
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-            .post(Entity.json(Map.of(
-                "code", "ALG123",
-                "title", "Introduction to Algorithms"
-            )));
+            .post(Entity.json(new CreateCourseRequest("ALG1001", "Introduction to Algorithms")));
 
         response.bufferEntity();
 
@@ -226,7 +224,7 @@ class MainIntegrationTest {
 
         final var responseBody = response.readEntity(FindCourseResponse.class);
         assertEquals(courseId, responseBody.id());
-        assertEquals("ALG123", responseBody.code());
+        assertEquals("ALG1001", responseBody.code());
         assertEquals("Introduction to Algorithms", responseBody.title());
         assertEquals(5, responseBody.rating());
     }
