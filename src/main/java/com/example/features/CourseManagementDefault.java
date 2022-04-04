@@ -6,6 +6,7 @@ import com.example.domain.course.CourseId;
 import com.example.domain.course.Rating;
 import com.example.domain.course.Title;
 import com.example.domain.enrollment.Enrollment;
+import com.example.infrastructure.validation.Validatable;
 import com.example.infrastructure.validation.ValidatorWrapper;
 import com.example.persistence.course.CourseRepository;
 import com.example.persistence.enrollment.EnrollmentRepository;
@@ -18,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-public final class CourseManagementDefault implements CourseManagement {
+public final class CourseManagementDefault implements CourseManagement, Validatable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CourseManagementDefault.class);
 

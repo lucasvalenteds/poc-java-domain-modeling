@@ -5,6 +5,7 @@ import com.example.domain.student.FirstName;
 import com.example.domain.student.LastName;
 import com.example.domain.student.Student;
 import com.example.domain.student.StudentId;
+import com.example.infrastructure.validation.Validatable;
 import com.example.infrastructure.validation.ValidatorWrapper;
 import com.example.persistence.enrollment.EnrollmentRepository;
 import com.example.persistence.rating.RatingRepository;
@@ -17,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 import java.util.UUID;
 
-public final class StudentManagementDefault implements StudentManagement {
+public final class StudentManagementDefault implements StudentManagement, Validatable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StudentManagementDefault.class);
 

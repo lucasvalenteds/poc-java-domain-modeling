@@ -4,7 +4,7 @@ import com.example.domain.course.CourseId;
 import com.example.domain.enrollment.Enrollment;
 import com.example.domain.enrollment.EnrollmentId;
 import com.example.domain.student.StudentId;
-import com.example.infrastructure.validation.Validation;
+import com.example.infrastructure.validation.Validatable;
 import jakarta.inject.Inject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 import java.sql.Types;
 import java.util.List;
 
-public final class EnrollmentRepositoryDefault implements EnrollmentRepository, Validation {
+public final class EnrollmentRepositoryDefault implements EnrollmentRepository, Validatable {
 
     private final JdbcTemplate jdbcTemplate;
 

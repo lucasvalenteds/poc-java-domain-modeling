@@ -2,6 +2,7 @@ package com.example.persistence.course;
 
 import com.example.domain.course.Course;
 import com.example.domain.course.CourseId;
+import com.example.infrastructure.validation.Validatable;
 import com.example.persistence.rating.RatingRepository;
 import jakarta.inject.Inject;
 import org.springframework.dao.DataAccessException;
@@ -12,7 +13,7 @@ import org.springframework.jdbc.core.RowMapper;
 import javax.sql.DataSource;
 import java.sql.Types;
 
-public final class CourseRepositoryDefault implements CourseRepository {
+public final class CourseRepositoryDefault implements CourseRepository, Validatable {
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Course> courseRowMapper;

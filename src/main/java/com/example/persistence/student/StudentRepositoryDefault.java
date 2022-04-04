@@ -3,6 +3,7 @@ package com.example.persistence.student;
 import com.example.domain.student.LastName;
 import com.example.domain.student.Student;
 import com.example.domain.student.StudentId;
+import com.example.infrastructure.validation.Validatable;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataAccessException;
@@ -13,7 +14,7 @@ import org.springframework.jdbc.core.RowMapper;
 import javax.sql.DataSource;
 import java.sql.Types;
 
-public final class StudentRepositoryDefault implements StudentRepository {
+public final class StudentRepositoryDefault implements StudentRepository, Validatable {
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<Student> studentRowMapper;

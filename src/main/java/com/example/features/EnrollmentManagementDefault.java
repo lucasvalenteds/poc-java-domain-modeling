@@ -4,6 +4,7 @@ import com.example.domain.course.CourseId;
 import com.example.domain.enrollment.Enrollment;
 import com.example.domain.enrollment.EnrollmentId;
 import com.example.domain.student.StudentId;
+import com.example.infrastructure.validation.Validatable;
 import com.example.persistence.course.CourseRepository;
 import com.example.persistence.enrollment.EnrollmentRepository;
 import com.example.persistence.student.StudentRepository;
@@ -14,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-public final class EnrollmentManagementDefault implements EnrollmentManagement {
+public final class EnrollmentManagementDefault implements EnrollmentManagement, Validatable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EnrollmentManagementDefault.class);
 
