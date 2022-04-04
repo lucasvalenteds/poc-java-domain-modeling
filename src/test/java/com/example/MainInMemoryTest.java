@@ -9,6 +9,7 @@ import com.example.web.course.FindCourseResponse;
 import com.example.web.enrollment.EnrollResponse;
 import com.example.web.enrollment.RateRequest;
 import com.example.web.enrollment.RateResponse;
+import com.example.web.student.CreateStudentRequest;
 import com.example.web.student.FindStudentResponse;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
@@ -24,12 +25,12 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MainInMemoryTest extends JerseyTest {
@@ -55,10 +56,7 @@ class MainInMemoryTest extends JerseyTest {
             .request()
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-            .post(Entity.json(Map.of(
-                "firstName", "John",
-                "lastName", "Smith"
-            )));
+            .post(Entity.json(new CreateStudentRequest("John", "Smith")));
 
         response.bufferEntity();
 
@@ -271,6 +269,38 @@ class MainInMemoryTest extends JerseyTest {
         response.bufferEntity();
 
         assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    @Order(14)
+    void creatingStudentWithoutLastName() {
+        final var response = target().path("/students")
+            .request()
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .post(Entity.json(new CreateStudentRequest("John", null)));
+
+        response.bufferEntity();
+
+        assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+        assertNotNull(response.getLocation());
+
+        final var studentId = getLastResourceURI(response.getLocation());
+        final var response1 = target().path("/students/" + studentId)
+            .request()
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .get();
+
+        response1.bufferEntity();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response1.getStatus());
+
+        final var findStudentResponse = response1.readEntity(FindStudentResponse.class);
+        assertNotNull(findStudentResponse);
+        assertEquals(studentId, findStudentResponse.id());
+        assertEquals("John", findStudentResponse.firstName());
+        assertNull(findStudentResponse.lastName());
     }
 
     private String getLastResourceURI(final URI uri) {
