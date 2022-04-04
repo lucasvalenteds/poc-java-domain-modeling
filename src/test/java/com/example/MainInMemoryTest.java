@@ -2,6 +2,7 @@ package com.example;
 
 import com.example.infrastructure.configuration.ApplicationFeature;
 import com.example.infrastructure.configuration.DatabaseFeature;
+import com.example.infrastructure.validation.UnprocessableEntityStatusCode;
 import com.example.web.enrollment.EnrollResponse;
 import com.example.web.enrollment.RateRequest;
 import com.example.web.enrollment.RateResponse;
@@ -18,9 +19,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -117,6 +120,43 @@ class MainInMemoryTest extends JerseyTest {
         final var rateResponse = response.readEntity(RateResponse.class);
         assertNotNull(rateResponse);
         assertEquals(3, rateResponse.rating());
+    }
+
+    @Test
+    @Order(5)
+    void studentCannotRateCourseWithNegativeNumber() {
+        final var response = target().path("/enrollments/courses/" + courseId + "/students/" + studentId + "/rate")
+            .request()
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .post(Entity.json(new RateRequest(-1)));
+
+        response.bufferEntity();
+
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertThat(response.readEntity(String.class))
+            .contains(List.of(
+                "\"message\":\"must be greater than or equal to 0\"",
+                "\"path\":\"Rating.value\"",
+                "\"invalidValue\":\"-1\""
+            ));
+    }
+
+    @Test
+    @Order(6)
+    void studentCannotRateCourseNotEnrolled() {
+        final var otherCourseId = UUID.randomUUID();
+        final var response = target().path("/enrollments/courses/" + otherCourseId + "/students/" + studentId + "/rate")
+            .request()
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .post(Entity.json(new RateRequest(0)));
+
+        response.bufferEntity();
+
+        assertEquals(UnprocessableEntityStatusCode.INSTANCE.getStatusCode(), response.getStatus());
+        assertThat(response.readEntity(String.class))
+            .contains(List.of("{\"message\":\"Student cannot rating a course they are not enrolled in\"}"));
     }
 
     private String getLastResourceURI(final URI uri) {

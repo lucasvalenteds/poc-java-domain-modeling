@@ -1,11 +1,16 @@
 package com.example;
 
+import com.example.infrastructure.validation.UnprocessableEntityStatusCode;
 import com.example.web.enrollment.EnrollResponse;
 import com.example.web.enrollment.RateRequest;
 import com.example.web.enrollment.RateResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.ConstraintViolation;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -18,11 +23,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import java.net.URI;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MainIntegrationTest {
@@ -49,6 +58,8 @@ class MainIntegrationTest {
 
     private static String studentId;
     private static String courseId;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @Order(1)
@@ -126,6 +137,43 @@ class MainIntegrationTest {
         final var rateResponse = response.readEntity(RateResponse.class);
         assertNotNull(rateResponse);
         assertEquals(3, rateResponse.rating());
+    }
+
+    @Test
+    @Order(5)
+    void studentCannotRateCourseWithNegativeNumber() {
+        final var response = target().path("/enrollments/courses/" + courseId + "/students/" + studentId + "/rate")
+            .request()
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .post(Entity.json(new RateRequest(-1)));
+
+        response.bufferEntity();
+
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertThat(response.readEntity(String.class))
+            .contains(List.of(
+                "\"message\":\"must be greater than or equal to 0\"",
+                "\"path\":\"Rating.value\"",
+                "\"invalidValue\":\"-1\""
+            ));
+    }
+
+    @Test
+    @Order(6)
+    void studentCannotRateCourseNotEnrolled() {
+        final var otherCourseId = UUID.randomUUID();
+        final var response = target().path("/enrollments/courses/" + otherCourseId + "/students/" + studentId + "/rate")
+            .request()
+            .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .post(Entity.json(new RateRequest(0)));
+
+        response.bufferEntity();
+
+        assertEquals(UnprocessableEntityStatusCode.INSTANCE.getStatusCode(), response.getStatus());
+        assertThat(response.readEntity(String.class))
+            .contains(List.of("{\"message\":\"Student cannot rating a course they are not enrolled in\"}"));
     }
 
     private String getLastResourceURI(final URI uri) {
