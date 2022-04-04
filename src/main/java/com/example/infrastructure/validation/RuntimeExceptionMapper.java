@@ -17,7 +17,7 @@ public final class RuntimeExceptionMapper implements ExceptionMapper<RuntimeExce
     public Response toResponse(RuntimeException exception) {
         LOGGER.info(exception.getMessage(), exception);
 
-        return Response.status(Response.Status.BAD_REQUEST)
+        return Response.status(UnprocessableEntityStatusCode.INSTANCE)
             .entity(Map.of("message", exception.getMessage()))
             .build();
     }
