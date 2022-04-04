@@ -9,7 +9,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import javax.sql.DataSource;
 import java.sql.Types;
 
 public class RatingRepositoryDefault implements RatingRepository, Validatable {
@@ -18,9 +17,9 @@ public class RatingRepositoryDefault implements RatingRepository, Validatable {
     private final RowMapper<Rating> ratingRowMapper;
 
     @Inject
-    public RatingRepositoryDefault(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.ratingRowMapper = new RatingRowMapper();
+    public RatingRepositoryDefault(JdbcTemplate jdbcTemplate, RowMapper<Rating> ratingRowMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.ratingRowMapper = ratingRowMapper;
     }
 
     @Override

@@ -6,10 +6,12 @@ import jakarta.ws.rs.core.Feature;
 import jakarta.ws.rs.core.FeatureContext;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
+import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.h2.jdbcx.JdbcDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.util.Optional;
@@ -95,6 +97,9 @@ public final class DatabaseFeature implements Feature {
             bind(this.flyway)
                 .to(Flyway.class)
                 .in(Singleton.class);
+
+            bindFactory(() -> new JdbcTemplate(this.dataSource))
+                .to(JdbcTemplate.class);
         }
     }
 }

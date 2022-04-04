@@ -5,6 +5,7 @@ import com.example.domain.course.Course;
 import com.example.domain.course.CourseId;
 import com.example.domain.course.Title;
 import com.example.persistence.rating.RatingRepository;
+import jakarta.inject.Inject;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -15,6 +16,7 @@ public final class CourseRowMapper implements RowMapper<Course> {
 
     private final RatingRepository ratingRepository;
 
+    @Inject
     public CourseRowMapper(RatingRepository ratingRepository) {
         this.ratingRepository = ratingRepository;
     }

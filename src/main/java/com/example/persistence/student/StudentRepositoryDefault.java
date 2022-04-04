@@ -11,7 +11,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import javax.sql.DataSource;
 import java.sql.Types;
 
 public class StudentRepositoryDefault implements StudentRepository, Validatable {
@@ -20,9 +19,9 @@ public class StudentRepositoryDefault implements StudentRepository, Validatable 
     private final RowMapper<Student> studentRowMapper;
 
     @Inject
-    public StudentRepositoryDefault(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.studentRowMapper = new StudentRowMapper();
+    public StudentRepositoryDefault(JdbcTemplate jdbcTemplate, RowMapper<Student> studentRowMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.studentRowMapper = studentRowMapper;
     }
 
     @Override

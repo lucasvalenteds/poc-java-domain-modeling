@@ -5,14 +5,11 @@ import com.example.domain.enrollment.Enrollment;
 import com.example.domain.enrollment.EnrollmentId;
 import com.example.domain.student.StudentId;
 import com.example.infrastructure.validation.Validatable;
-import com.example.persistence.course.CourseRepository;
-import com.example.persistence.student.StudentRepository;
 import jakarta.inject.Inject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-import javax.sql.DataSource;
 import java.sql.Types;
 import java.util.List;
 
@@ -22,11 +19,10 @@ public class EnrollmentRepositoryDefault implements EnrollmentRepository, Valida
     private final ResultSetExtractor<List<Enrollment>> enrollmentResultSetExtractor;
 
     @Inject
-    public EnrollmentRepositoryDefault(DataSource dataSource,
-                                       StudentRepository studentRepository,
-                                       CourseRepository courseRepository) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.enrollmentResultSetExtractor = new EnrollmentResultSetExtractor(studentRepository, courseRepository);
+    public EnrollmentRepositoryDefault(JdbcTemplate jdbcTemplate,
+                                       ResultSetExtractor<List<Enrollment>> enrollmentResultSetExtractor) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.enrollmentResultSetExtractor = enrollmentResultSetExtractor;
     }
 
     @Override

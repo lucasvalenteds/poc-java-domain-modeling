@@ -3,14 +3,12 @@ package com.example.persistence.course;
 import com.example.domain.course.Course;
 import com.example.domain.course.CourseId;
 import com.example.infrastructure.validation.Validatable;
-import com.example.persistence.rating.RatingRepository;
 import jakarta.inject.Inject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import javax.sql.DataSource;
 import java.sql.Types;
 
 public class CourseRepositoryDefault implements CourseRepository, Validatable {
@@ -19,9 +17,9 @@ public class CourseRepositoryDefault implements CourseRepository, Validatable {
     private final RowMapper<Course> courseRowMapper;
 
     @Inject
-    public CourseRepositoryDefault(DataSource dataSource, RatingRepository ratingRepository) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.courseRowMapper = new CourseRowMapper(ratingRepository);
+    public CourseRepositoryDefault(JdbcTemplate jdbcTemplate, RowMapper<Course> courseRowMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.courseRowMapper = courseRowMapper;
     }
 
     @Override

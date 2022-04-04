@@ -6,6 +6,7 @@ import com.example.domain.enrollment.EnrollmentId;
 import com.example.domain.student.StudentId;
 import com.example.persistence.course.CourseRepository;
 import com.example.persistence.student.StudentRepository;
+import jakarta.inject.Inject;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -20,6 +21,7 @@ public final class EnrollmentResultSetExtractor implements ResultSetExtractor<Li
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
 
+    @Inject
     public EnrollmentResultSetExtractor(StudentRepository studentRepository, CourseRepository courseRepository) {
         this.studentRepository = studentRepository;
         this.courseRepository = courseRepository;
