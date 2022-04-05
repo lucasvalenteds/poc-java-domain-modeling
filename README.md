@@ -10,5 +10,5 @@ The application is a Web service capable of managing students and courses. It sh
 
 | Description | Command |
 | :--- | :--- |
-| Run tests | `mvn test` |
-| Run application | `mvn exec:java` |
+| Run tests | `./mvnw test` |
+| Run application | `./mvnw exec:java` |
