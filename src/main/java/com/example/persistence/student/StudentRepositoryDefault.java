@@ -74,7 +74,7 @@ public class StudentRepositoryDefault implements StudentRepository, Validatable 
         } catch (EmptyResultDataAccessException exception) {
             throw new StudentNotFoundException(studentId, exception);
         } catch (DataAccessException exception) {
-            throw new StudentPersistenceException(studentId, "Error finding customer", exception);
+            throw new StudentPersistenceException(studentId, "Error finding student", exception);
         }
     }
 }
