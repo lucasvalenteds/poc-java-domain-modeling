@@ -30,7 +30,6 @@ import jakarta.ws.rs.core.Feature;
 import jakarta.ws.rs.core.FeatureContext;
 import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ServerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,9 +46,6 @@ public final class ApplicationFeature implements Feature {
     @Override
     public boolean configure(FeatureContext context) {
         context
-            .register(LoggingFeature.class)
-            .property(LoggingFeature.LOGGING_FEATURE_LOGGER_LEVEL, "SEVERE")
-            .property(LoggingFeature.LOGGING_FEATURE_VERBOSITY, LoggingFeature.Verbosity.PAYLOAD_ANY)
             .property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true)
             .property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, true)
             .register(new ApplicationFeature.Binder())

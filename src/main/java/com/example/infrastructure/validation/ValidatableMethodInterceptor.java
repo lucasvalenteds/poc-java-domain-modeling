@@ -21,7 +21,7 @@ public final class ValidatableMethodInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(final MethodInvocation invocation) throws Throwable {
-        LOGGER.info("Intercepting method {}", invocation.getMethod().getName());
+        LOGGER.debug("Intercepting method {}", invocation.getMethod().getName());
         return intercept(invocation, invocation.getMethod().getParameters());
     }
 

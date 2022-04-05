@@ -29,11 +29,11 @@ public final class ValidatableInterceptionService implements InterceptionService
 
     @Override
     public List<MethodInterceptor> getMethodInterceptors(Method method) {
-        LOGGER.info("Intercepting method {}", method.getName());
+        LOGGER.debug("Intercepting method {}", method.getName());
 
         for (Parameter parameter : method.getParameters()) {
             if (parameter.isAnnotationPresent(Valid.class)) {
-                LOGGER.info("Intercepting {} annotated with @Valid", parameter);
+                LOGGER.debug("Intercepting {} annotated with @Valid", parameter);
                 return METHOD_INTERCEPTORS;
             }
         }
@@ -43,7 +43,7 @@ public final class ValidatableInterceptionService implements InterceptionService
 
     @Override
     public List<ConstructorInterceptor> getConstructorInterceptors(Constructor<?> constructor) {
-        LOGGER.info("Intercepting constructor from {}", constructor.getDeclaringClass().getSimpleName());
+        LOGGER.debug("Intercepting constructor from {}", constructor.getDeclaringClass().getSimpleName());
         return List.of();
     }
 }
