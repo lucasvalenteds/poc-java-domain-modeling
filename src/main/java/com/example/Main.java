@@ -10,14 +10,23 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Optional;
 
 public final class Main {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-    public static final String BASE_URI = "http://localhost:8080/";
+    public static int getServerPort() {
+        return Optional.ofNullable(System.getenv("PORT"))
+            .map(Integer::parseInt)
+            .orElseGet(() -> 8080);
+    }
 
-    public static HttpServer startServer() {
+    public static URI getServerUrl(int serverPort) {
+        return URI.create("http://localhost:" + serverPort);
+    }
+
+    public static HttpServer startServer(URI uri) {
         final ResourceConfig resourceConfig = new ResourceConfig()
             .property(DatabaseFeature.DATABASE_URL_PROPERTY, "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1")
             .property(DatabaseFeature.DATABASE_USER_PROPERTY, "sa")
@@ -26,13 +35,14 @@ public final class Main {
             .register(ApplicationFeature.class)
             .packages(Main.class.getPackageName());
 
-        return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), resourceConfig);
+        return GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig);
     }
 
     public static void main(String[] args) throws IOException {
-        final var server = Main.startServer();
+        final var serverUrl = getServerUrl(getServerPort());
+        final var server = Main.startServer(serverUrl);
 
-        LOGGER.info("Application started with endpoints available at {}", Main.BASE_URI);
+        LOGGER.info("Application started with endpoints available at {}", serverUrl);
         LOGGER.info("Hit Ctrl-C to stop it...");
 
         //noinspection ResultOfMethodCallIgnored

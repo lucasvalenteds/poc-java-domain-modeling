@@ -40,10 +40,12 @@ class MainIntegrationTest {
 
     @BeforeAll
     public static void beforeAll() {
-        server = Main.startServer();
+        final var serverUrl = Main.getServerUrl(8081);
+
+        server = Main.startServer(serverUrl);
         target = ClientBuilder.newBuilder()
             .build()
-            .target(Main.BASE_URI);
+            .target(serverUrl);
     }
 
     @AfterAll
